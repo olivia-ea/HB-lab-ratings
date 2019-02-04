@@ -1,5 +1,5 @@
 """Models and database functions for Ratings project."""
-
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 # This is the connection to the PostgreSQL database; we're getting this through
@@ -25,6 +25,25 @@ class User(db.Model):
 
 
 # Put your Movie and Rating model classes here.
+class Rating(db.Model):
+    """User of ratings website."""
+
+    __tablename__ = "ratings"
+
+    rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    movie_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+
+class Movie(db.Model):
+    """User of ratings website."""
+
+    __tablename__ = "movies"
+
+    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    released_at = db.Column(db.DateTime, nullable=False)
+    imdb_url = db.Column(db.String(500), nullable=False)
 
 
 ##############################################################################
@@ -47,3 +66,5 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print("Connected to DB.")
+    # db.create_all()
+    # THIS WILL CREATE AN EMPTY TABLE FOR EACH CLASS
