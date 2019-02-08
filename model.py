@@ -1,5 +1,5 @@
 """Models and database functions for Ratings project."""
-from flask import Flask
+
 from flask_sqlalchemy import SQLAlchemy
 
 # This is the connection to the PostgreSQL database; we're getting this through

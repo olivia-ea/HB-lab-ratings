@@ -24,29 +24,103 @@ def index():
     """Homepage."""
     return render_template("homepage.html")
 
-@app.route('/register')
+@app.route('/register', methods=["GET"])
 def register_form():
 
     return render_template("register_form.html")
 
 @app.route('/register', methods=["POST"])
 def register_process():
-    #check if user already exists
-    #if not, create new user and password and store into user database
+
+    email = request.form['email']
+    password = request.form['password']
+    age = int(request.form['age'])
+    zipcode = request.form['zipcode']
+
+    check_email = User.query.filter(User.email == email).first()
+
+    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+
+    if check_email:
+        flash(f"User {email} already registered")
+        return redirect('/login')
+    else:
+        db.session.add(new_user)
+        db.session.commit()
+        flash(f"User {email} added")
+        return redirect('/')
+
+@app.route('/login', methods=['GET'])
+def login_form():
+
+    return render_template('login_form.html')
+
+@app.route('/login', methods=['POST'])
+def login_process():
+
+    email = request.form['email']
+    password = request.form['password']
+
+    check_password = User.query.filter(User.password == password).first()
+
+    if check_password:
+        session['email'] = email
+        flash(f'Logged in as {email}')
+        return redirect('/')
+    else:
+        flash(f'Wrong password')
+        return redirect('/login')
+
+@app.route('/logout')
+def logout():
+
+    if session['email']:
+        logout_message = session.pop('email')
+        flash(f'Logged out {logout_message}')
+
     
-    
-
-    return redirect('/')
+    return redirect("/")
 
 
-@app.route('/users', methods=["GET"])
+@app.route('/users')
 def user_list():
     users = User.query.all()
 
     return render_template('user_list.html', users=users)
 
+# @app.route("/users/<int:user_id>")
+# def user_detail(user_id):
 
 
+
+# @app.route("/movies")
+# def movie_list():
+#     """Show list of movies."""
+
+#     return render_template("movie_list.html", movies=movies)
+
+
+# @app.route("/movies/<int:movie_id>", methods=['GET'])
+# def movie_detail(movie_id):
+#     """Show info about movie.
+
+#     If a user is logged in, let them add/edit a rating.
+#     """
+
+
+#     return render_template("movie.html",
+#                            movie=movie,
+#                            user_rating=user_rating)
+
+
+# @app.route("/movies/<int:movie_id>", methods=['POST'])
+# def movie_detail_process(movie_id):
+#     """Add/edit a rating."""
+
+#     # Get form variables
+
+
+#     return redirect(f"/movies/{movie_id}")
 
 
 if __name__ == "__main__":

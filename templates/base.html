@@ -6,8 +6,21 @@
 <body>
     Ratings
     <hr>
+    {% if session %}
+      <a href="/logout">Logout</a>
+    {% else %}
+      <a href="/login">Login</a>
+    {% endif %}
 
-    {% block content %} ****CONTENT**** {% endblock %}
-    
+    <hr>
+
+    {% for flash in get_flashed_messages() %}
+      {{ flash }}
+    {% endfor %}
+
+    {% block content %}
+      Put your body here.
+    {% endblock %}
+
 </body>
 </html>
